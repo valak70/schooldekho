@@ -55,18 +55,15 @@ This project is deployed at: [https://schooldekho.onrender.com/](https://schoold
    Create a `.env.local` file at the project root with your MySQL credentials:
 
    ```
-   DB_HOST=your_database_host
-   DB_USER=your_database_user
-   DB_PASSWORD=your_database_password
-   DB_NAME=your_database_name
-
-    Cloudinary Credentials(optional)
-    CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+    DB_HOST=your_database_host
+    DB_USER=your_database_user
+    DB_PASSWORD=your_database_password
+    DB_NAME=your_database_name
+   
+    CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name    # Cloudinary Credentials(optional)
     CLOUDINARY_API_KEY=your_cloudinary_api_key
     CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-    
-    Use Cloudinary in production (set to 'true' for prod, 'false' for local file saving)
-    USE_CLOUDINARY=true
+    USE_CLOUDINARY=true    #Use Cloudinary in production (set to 'true' for prod, 'false' for local file saving)
    
    ```
 - Set `USE_CLOUDINARY=true` when deploying to production to enable Cloudinary uploads.
@@ -103,7 +100,7 @@ This project is deployed at: [https://schooldekho.onrender.com/](https://schoold
 - Make sure the MySQL user you use has privileges to access and modify the database.
 - If you encounter "Access denied" errors, verify that the user has the necessary privileges.
 
-
+---
 ### How to Deploy
 
 1. Push your code with proper `.env` configuration to GitHub or equivalent repository.
@@ -125,9 +122,6 @@ This project is deployed at: [https://schooldekho.onrender.com/](https://schoold
 
 - **Database Access:**  
   Ensure AWS RDS security groups allow inbound connections from your Render service's IP or CIDR range.
-
-- **Secrets Management:**  
-  Never commit `.env.local` or secrets to version control. Use Render environment variables securely.
 
 ---
 
