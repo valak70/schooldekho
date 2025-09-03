@@ -100,6 +100,7 @@ This project is deployed at: [https://schooldekho.onrender.com/](https://schoold
 
 
 ### Database Setup Caution
+- Use schoolData.sql from root directory to populate sample school data(Just copy the entire file and paste it as mysql query inside your database).
 - Make sure the MySQL user you use has privileges to access and modify the database.
 - If you encounter "Access denied" errors, verify that the user has the necessary privileges.
 
