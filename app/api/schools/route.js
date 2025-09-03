@@ -61,14 +61,11 @@ export async function POST(request) {
     let imageUrl = '';
 
     if (process.env.USE_CLOUDINARY === 'true') {
-      // Upload to Cloudinary
       const result = await uploadToCloudinary(buffer);
       imageUrl = result.secure_url;
     } else {
-      // Save locally
       const filename = `${Date.now()}_${image.name.replaceAll(' ', '_')}`;
       const localPath = path.join(process.cwd(), 'public/schoolImages');
-      // Optionally ensure directory exists here
       const fullPath = path.join(localPath, filename);
       await writeFile(fullPath, buffer);
       imageUrl = `/schoolImages/${filename}`;

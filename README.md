@@ -16,34 +16,23 @@ It includes a form for adding schools (with image upload) and a grid view to bro
 - **Next.js (App Router)**  
 - **MySQL**  
 - **CSS Modules**
+  
+## Deployment Information
 
+This project is deployed at: [https://schooldekho.onrender.com/](https://schooldekho.onrender.com/)
 
-## Folder Structure
+### Infrastructure and Services Used
 
-```
-app/
-  addSchool/
-    addSchool.module.css
-    page.jsx
-  api/
-    schools/
-      route.js
-  components/
-    Navbar.jsx
-    Navbar.module.css
-  showSchools/
-    page.jsx
-    showSchools.module.css
-  favicon.ico
-  globals.css
-  layout.js
-  page.js
-  page.module.css
-lib/
-  db.js
-public/
-  ...
-```
+- **Database:** AWS RDS (Amazon Relational Database Service) MySQL instance.  
+  A managed, highly available MySQL database hosted on AWS powering the backend data store.
+
+- **Image Storage:** Cloudinary.  
+  Cloudinary is used for storing and serving school images in production, ensuring reliable, scalable image management.
+
+- **Hosting Platform:** Render.com  
+  The Next.js application is hosted on Render's managed server platform, supporting persistent server processes and environment variable management.
+
+---
 
 
 ## Setup Instructions
@@ -70,8 +59,18 @@ public/
    DB_USER=your_database_user
    DB_PASSWORD=your_database_password
    DB_NAME=your_database_name
-   ```
 
+    Cloudinary Credentials(optional)
+    CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+    CLOUDINARY_API_KEY=your_cloudinary_api_key
+    CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+    
+    Use Cloudinary in production (set to 'true' for prod, 'false' for local file saving)
+    USE_CLOUDINARY=true
+   
+   ```
+- Set `USE_CLOUDINARY=true` when deploying to production to enable Cloudinary uploads.
+- For local development or environments without Cloudinary, set `USE_CLOUDINARY=false` or omit this variable to fall back to saving images locally in the `/public/schoolImages/` folder.
 4. **Set up MySQL database**
 
    Create the `schools` table using this SQL command:
@@ -100,6 +99,39 @@ public/
    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 
+### Database Setup Caution
+- Make sure the MySQL user you use has privileges to access and modify the database.
+- If you encounter "Access denied" errors, verify that the user has the necessary privileges.
+
+
+### How to Deploy
+
+1. Push your code with proper `.env` configuration to GitHub or equivalent repository.
+
+2. Connect your repository to [Render.com](https://render.com) and create a new Web Service.
+
+3. In Render’s dashboard, add the environment variables from above with your actual credentials.
+
+4. Deploy and monitor logs for build success.
+
+5. Access your live app at [https://schooldekho.onrender.com/](https://schooldekho.onrender.com/).
+
+---
+
+### Notes
+
+- **File Uploads:**  
+  Local image uploads are only suitable for local development due to ephemeral file storage in cloud hosting. Use Cloudinary in production.
+
+- **Database Access:**  
+  Ensure AWS RDS security groups allow inbound connections from your Render service's IP or CIDR range.
+
+- **Secrets Management:**  
+  Never commit `.env.local` or secrets to version control. Use Render environment variables securely.
+
+---
+
+
 ## Roadmap / Future Plans
 
 - **School Detail Page:**  
@@ -116,9 +148,6 @@ public/
 
 - **Image Upload Improvements:**  
   Support multiple images and better image handling.
-
-- **Responsive Design Enhancements:**  
-  Improve mobile and tablet experience.
 
 - **API Improvements:**  
   Add pagination, sorting, and better error handling to API endpoints.
