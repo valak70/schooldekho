@@ -1,37 +1,22 @@
-# SchoolDekho Mini-Project
+
+# SchoolDekho
 
 ## Overview
-
-SchoolDekho is a small web application built with Next.js and MySQL that allows users to add and browse schools. It consists of two main pages: one for adding school details with image upload, and another for displaying the list of schools in a responsive, user-friendly layout.
-
-The home page features a navigation bar with logo and buttons to navigate between pages, a background image, and prominent call-to-action buttons to explore or add schools.
-
----
+**SchoolDekho** is a mini web app built with **Next.js** and **MySQL** to add and explore schools.  
+It includes a form for adding schools (with image upload) and a grid view to browse them.
 
 ## Features
+- Add school details (name, address, city, state, contact, email, image) with validation  
+- Browse schools in a responsive grid with images and info  
+- Reusable Navbar & simple landing page with background + CTA  
+- Fully responsive UI with modern CSS modules  
+- MySQL integration for storing and fetching school data  
 
-- **Add School Page**: Form to input school details such as name, address, city, state, contact number, email, and upload an image. Uses `react-hook-form` for validation and uploads images to `/public/schoolImages`.
-- **Show Schools Page**: Displays a grid of schools with name, address, city, and image fetched from MySQL.
-- **Reusable Navbar Component**: Common navigation bar with logo and links.
-- **Home Page**: Attractive landing page with background image, navigation bar, "Explore Schools" button, and floating add ("+") button.
-- **Responsive Design**: Fully responsive across mobile and desktop devices.
-- **MySQL Integration**: Stores and retrieves school data with secure, parameterized queries.
-- **Image Upload**: Stores school images in a public folder accessible by the frontend.
+## Tech Stack
+- **Next.js (App Router)**  
+- **MySQL**  
+- **CSS Modules**
 
----
-
-## Technology Stack
-
-- **Next.js** (latest) with App Router
-- **MySQL** database
-- **CSS Modules** for scoped styling
-
-
-## Features
-
-- Add new schools with details and images
-- View a list of schools
-- Responsive UI with modular components
 
 ## Folder Structure
 
