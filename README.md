@@ -6,11 +6,14 @@
 It includes a form for adding schools (with image upload) and a grid view to browse them.
 
 ## Features
-- Add school details (name, address, city, state, contact, email, image) with validation  
-- Browse schools in a responsive grid with images and info  
-- Reusable Navbar & simple landing page with background + CTA  
-- Fully responsive UI with modern CSS modules  
-- MySQL integration for storing and fetching school data  
+- Add school details (name, address, city, state, contact, email, image) with validation
+- Browse schools in a responsive grid with images and info
+- Edit and delete school entries (protected, only for logged-in users)
+- OTP-based user registration and login system
+- Conditional rendering based on user authentication
+- Fully responsive UI with modern CSS modules
+- Image upload support (local storage or Cloudinary)
+
 
 ## Tech Stack
 - **Next.js (App Router)**  
@@ -64,26 +67,23 @@ This project is deployed at: [https://schooldekho.onrender.com/](https://schoold
     CLOUDINARY_API_KEY=your_cloudinary_api_key
     CLOUDINARY_API_SECRET=your_cloudinary_api_secret
     USE_CLOUDINARY=true    #Use Cloudinary in production (set to 'true' for prod, 'false' for local file saving)
+
+    JWT_SECRET=replace_with_strong_random_secret
+    
+    # If using Gmail OAuth2 
+    EMAIL_SECRET=replace_with_email_token_secret
+    EMAIL_USER=you@example.com
+    OAUTH_CLIENT_ID=your_google_oauth_client_id
+    OAUTH_CLIENT_SECRET=your_google_oauth_client_secret
+    OAUTH_REFRESH_TOKEN=your_google_oauth_refresh_token
+    OAUTH_REDIRECT_URI=https://developers.google.com/oauthplayground
    
    ```
 - Set `USE_CLOUDINARY=true` when deploying to production to enable Cloudinary uploads.
 - For local development or environments without Cloudinary, set `USE_CLOUDINARY=false` or omit this variable to fall back to saving images locally in the `/public/schoolImages/` folder.
 4. **Set up MySQL database**
 
-   Create the `schools` table using this SQL command:
-
-   ```sql
-   CREATE TABLE schools (
-     id INT AUTO_INCREMENT PRIMARY KEY,
-     name TEXT NOT NULL,
-     address TEXT NOT NULL,
-     city TEXT NOT NULL,
-     state TEXT NOT NULL,
-     contact VARCHAR(20) NOT NULL,
-     image TEXT NOT NULL,
-     email_id VARCHAR(255) NOT NULL
-   );
-   ```
+   Create the tables using SQL commands in tableSchema.sql in root directory
 
 5. **Run the development server**
 
@@ -134,12 +134,6 @@ This project is deployed at: [https://schooldekho.onrender.com/](https://schoold
 
 - **Search & Filter in ShowSchools:**  
   Implement search and filtering options to easily find schools by name, city, or state.
-
-- **Edit & Delete Schools:**  
-  Allow users to update or remove school entries.
-
-- **User Authentication:**  
-  Add login and registration for secure access and management.
 
 - **Image Upload Improvements:**  
   Support multiple images and better image handling.
