@@ -123,17 +123,21 @@ export async function PUT(request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     if (!id) {
-      return NextResponse.json(
-        { error: 'School ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'School ID is required' }, { status: 400 });
     }
 
     const data = await request.formData();
-    let imageUrl = data.get('existingImage'); // fallback if no new upload
-
+    const norm = (v) => {
+      if (v == null) return null;
+      const s = String(v).trim();
+      if (s === '' || s.toLowerCase() === 'null' || s.toLowerCase() === 'undefined') return null;
+      return s;
+    };
+    let imageUrl = norm(data.get('existingImage'));
     const image = data.get('image');
-    if (image && image.name) {
+    const hasNewFile = image && typeof image === 'object' && 'name' in image && image.name;
+
+    if (hasNewFile) {
       const buffer = await fileToBuffer(image);
       if (process.env.USE_CLOUDINARY === 'true') {
         const result = await uploadToCloudinary(buffer);
@@ -146,31 +150,51 @@ export async function PUT(request) {
         imageUrl = `/schoolImages/${filename}`;
       }
     }
+    let sql;
+    let values;
 
-    const sql = `
-      UPDATE schools
-      SET name=?, address=?, city=?, state=?, contact=?, email_id=?, image=?
-      WHERE id=?
-    `;
-
-    const values = [
-      data.get('name'),
-      data.get('address'),
-      data.get('city'),
-      data.get('state'),
-      data.get('contact'),
-      data.get('email_id'),
-      imageUrl,
-      id,
-    ];
+    if (imageUrl) {
+      sql = `
+        UPDATE schools
+        SET name=?, address=?, city=?, state=?, contact=?, email_id=?, image=?
+        WHERE id=?
+      `;
+      values = [
+        norm(data.get('name')),
+        norm(data.get('address')),
+        norm(data.get('city')),
+        norm(data.get('state')),
+        norm(data.get('contact')),
+        norm(data.get('email_id')),
+        imageUrl,
+        id,
+      ];
+    } else {
+      sql = `
+        UPDATE schools
+        SET name=?, address=?, city=?, state=?, contact=?, email_id=?
+        WHERE id=?
+      `;
+      values = [
+        norm(data.get('name')),
+        norm(data.get('address')),
+        norm(data.get('city')),
+        norm(data.get('state')),
+        norm(data.get('contact')),
+        norm(data.get('email_id')),
+        id,
+      ];
+    }
 
     await pool.query(sql, values);
 
     return NextResponse.json({ message: 'School updated successfully!' });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
 
 // DELETE school (protected)
 export async function DELETE(request) {
