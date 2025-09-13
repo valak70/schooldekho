@@ -19,7 +19,7 @@ It includes a form for adding schools (with image upload) and a grid view to bro
   
 ## Deployment Information
 
-This project is deployed at: [https://schooldekho.onrender.com/](https://schooldekho.onrender.com/)
+This project is deployed at: [https://schooldekho.onrender.com/](https://schooldekho.onrender.com/) (Render termporarily shuts the service when inactive so you might have to wait for a minute on the page while render restarts the service)
 
 ### Infrastructure and Services Used
 
