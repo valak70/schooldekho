@@ -21,13 +21,13 @@ export default function HomePage() {
           Explore Schools
         </button>
 
-        <button
+        {/* <button
           className={styles.addButton}
           onClick={() => router.push('/addSchool')}
           aria-label="Add School"
         >
           +
-        </button>
+        </button> */}
       </main>
     </>
   );

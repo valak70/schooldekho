@@ -27,6 +27,7 @@ export default function AddSchoolPage() {
     const response = await fetch('/api/schools', {
       method: 'POST',
       body: formData,
+      credentials: 'include',
     });
 
     const result = await response.json();
