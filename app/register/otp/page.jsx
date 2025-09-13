@@ -1,32 +1,38 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from '../Register.module.css';
 import Navbar from '../../components/Navbar';
 
 export default function OTPPage() {
+  return (
+    <>
+      <Navbar />
+      <main className={styles.main}>
+        <div className={styles['bg-blur']} />
+        <div className={styles.container}>
+          <h1 className={styles.title}>Verify OTP</h1>
+          {/* Wrap the part that uses useSearchParams in Suspense */}
+          <Suspense fallback={<p className={styles.subtitle}>Loading...</p>}>
+            <OTPForm />
+          </Suspense>
+        </div>
+      </main>
+    </>
+  );
+}
+
+function OTPForm() {
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Use useEffect to safely read query params at runtime
-  useEffect(() => {
-    const n = searchParams.get('name');
-    const e = searchParams.get('email');
-
-    if (!n || !e) {
-      setMessage('Invalid access. Name or email missing.');
-      return;
-    }
-
-    setName(n);
-    setEmail(e);
-  }, [searchParams]);
+  // Read name & email from query params
+  const name = searchParams.get('name') || '';
+  const email = searchParams.get('email') || '';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,67 +45,52 @@ export default function OTPPage() {
         body: JSON.stringify({ name, email, otp, password }),
       });
 
-      const result = await res.json();
-
-      if (res.ok) {
-        setMessage('Account created successfully! Redirecting to login...');
-        setTimeout(() => router.push('/login'), 1500);
-      } else {
-        setMessage(result.error || 'Verification failed');
+      // Handle HTTP errors explicitly
+      if (!res.ok) {
+        let serverMsg = 'Verification failed';
+        try {
+          const json = await res.json();
+          if (json?.error) serverMsg = json.error;
+        } catch {}
+        setMessage(serverMsg);
+        return;
       }
+
+      setMessage('Account created successfully!');
+      router.push('/login');
     } catch (err) {
-      setMessage('Something went wrong. Please try again.');
+      const msg = err instanceof Error ? err.message : String(err);
+      setMessage(msg);
     }
   };
 
-  // If name/email not set yet, render a loading placeholder
-  if (!name || !email) {
-    return (
-      <>
-        <Navbar />
-        <main className={styles.main}>
-          <div className={styles['bg-blur']} />
-          <div className={styles.container}>
-            <h1 className={styles.title}>Verify OTP</h1>
-            {message ? <p className={styles.message}>{message}</p> : <p>Loading...</p>}
-          </div>
-        </main>
-      </>
-    );
-  }
-
   return (
     <>
-      <Navbar />
-      <main className={styles.main}>
-        <div className={styles['bg-blur']} />
-        <div className={styles.container}>
-          <h1 className={styles.title}>Verify OTP</h1>
-          <p className={styles.subtitle}>
-            Enter the OTP sent to <strong>{email}</strong> (check spam folder if not found)
-          </p>
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
-            />
+      <p className={styles.subtitle}>
+        Enter the OTP sent to <strong>{email}</strong> (check spam folder if not found)
+      </p>
 
-            <input
-              type="password"
-              placeholder="Set Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input
+          type="text"
+          placeholder="Enter OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          required
+        />
 
-            <button type="submit">Verify & Register</button>
-          </form>
-          {message && <p className={styles.message}>{message}</p>}
-        </div>
-      </main>
+        <input
+          type="password"
+          placeholder="Set Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <button type="submit">Verify & Register</button>
+      </form>
+
+      {message && <p className={styles.message}>{message}</p>}
     </>
   );
 }
