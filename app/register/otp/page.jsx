@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styles from '../Register.module.css';
 import Navbar from '../../components/Navbar';
@@ -9,32 +9,63 @@ export default function OTPPage() {
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get name & email from query params
-  const name = searchParams.get('name');
-  const email = searchParams.get('email');
+  // Extract query params safely inside useEffect
+  useEffect(() => {
+    const n = searchParams.get('name');
+    const e = searchParams.get('email');
+    if (!n || !e) {
+      setMessage('Invalid access. Name or email missing.');
+      return;
+    }
+    setName(n);
+    setEmail(e);
+  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
 
-    const res = await fetch('/api/auth/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, otp, password }),
-    });
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, otp, password }),
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (res.ok) {
-      setMessage('Account created successfully!');
-      router.push('/login'); // redirect to login page
-    } else {
-      setMessage(result.error || 'Verification failed');
+      if (res.ok) {
+        setMessage('Account created successfully! Redirecting to login...');
+        setTimeout(() => router.push('/login'), 1500);
+      } else {
+        setMessage(result.error || 'Verification failed');
+      }
+    } catch (err) {
+      setMessage('Something went wrong. Please try again.');
     }
   };
+
+  // If name/email missing, don't show the form
+  if (!name || !email) {
+    return (
+      <>
+        <Navbar />
+        <main className={styles.main}>
+          <div className={styles['bg-blur']} />
+          <div className={styles.container}>
+            <h1 className={styles.title}>Access Denied</h1>
+            <p className={styles.message}>{message}</p>
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
