@@ -11,18 +11,19 @@ export default function OTPPage() {
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Extract query params safely inside useEffect
+  // Use useEffect to safely read query params at runtime
   useEffect(() => {
     const n = searchParams.get('name');
     const e = searchParams.get('email');
+
     if (!n || !e) {
       setMessage('Invalid access. Name or email missing.');
       return;
     }
+
     setName(n);
     setEmail(e);
   }, [searchParams]);
@@ -51,7 +52,7 @@ export default function OTPPage() {
     }
   };
 
-  // If name/email missing, don't show the form
+  // If name/email not set yet, render a loading placeholder
   if (!name || !email) {
     return (
       <>
@@ -59,8 +60,8 @@ export default function OTPPage() {
         <main className={styles.main}>
           <div className={styles['bg-blur']} />
           <div className={styles.container}>
-            <h1 className={styles.title}>Access Denied</h1>
-            <p className={styles.message}>{message}</p>
+            <h1 className={styles.title}>Verify OTP</h1>
+            {message ? <p className={styles.message}>{message}</p> : <p>Loading...</p>}
           </div>
         </main>
       </>
